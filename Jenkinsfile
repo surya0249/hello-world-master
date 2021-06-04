@@ -12,14 +12,17 @@ node {
     }
 
     stage ('Docker Build') {
-     // Build and push image with Jenkins' docker-plugin
-    withDockerServer([uri: "tcp://localhost:4243"]) {
-        withDockerRegistry([credentialsId: "dockerhub", url: "https://index.docker.io/v1/"]) {
-        image = docker.build("suryasajja/myapp")
-        image.push()
-        }
-      }
+       app = docker.build("suryasajja/test") 
     }
+    
+    stage('Docker push') {
+docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {            
+       app.push("${env.BUILD_NUMBER}")            
+       app.push("latest")        
+              }    
+           }
+
+        
 
     stage ('Kubernetes Deploy') {
         kubernetesDeploy(
