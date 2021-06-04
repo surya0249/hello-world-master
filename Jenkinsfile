@@ -16,9 +16,11 @@ node {
     }
     
     stage('Push Docker Image'){
-        withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
+       withDockerRegistry(credentialsId: 'dockerhub', url: 'https://hub.docker.com/?ref=login') {
+    // some block
+ 
           sh "docker login -u suryasajja -p ${dockerhub}"
-        }
+       }
         sh 'docker push suryasajja/webapp'
      }
 
