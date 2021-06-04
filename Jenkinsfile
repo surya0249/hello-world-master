@@ -1,8 +1,4 @@
-currentBuild.displayName = "Final_Demo # "+currentBuild.number
-    def getDockerTag(){
-        def tag = sh script: 'git rev-parse HEAD', returnStdout: true
-        return tag
-        }
+
 node {
 
     def mvnHome = tool 'Maven'
@@ -12,19 +8,17 @@ node {
 
     }
 
-    stage ('build')  {
-        sh "${mvnHome}/bin/mvn package -f pom.xml"
-    }
-
-    stage('Build Docker Image') {
-         sh 'docker build . -t suryasajja/webapp:$Docker_tag'
-		   docker.withRegistry('https://registry.example.com', 'suryasajja') {
-				    
-				  sh 'docker login -u suryasajja -p $suryasajja'
-				  sh 'docker push suryasajja/webapp:$Docker_tag'
+    stage('Build image') {         
+       
+            app = docker.build("suryasajja/test")    
+    }  
+	stage('Push image') {
+docker.withRegistry('https://registry.hub.docker.com', 'suryasajja') {		
+       app.push("${env.BUILD_NUMBER}")            
+       app.push("latest")        
+              }    
            }
-        
-    }
+        }
 
         
 
