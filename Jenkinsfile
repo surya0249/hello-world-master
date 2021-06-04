@@ -1,3 +1,8 @@
+currentBuild.displayName = "Final_Demo # "+currentBuild.number
+    def getDockerTag(){
+        def tag = sh script: 'git rev-parse HEAD', returnStdout: true
+        return tag
+        }
 node {
 
     def mvnHome = tool 'Maven'
@@ -11,18 +16,15 @@ node {
         sh "${mvnHome}/bin/mvn package -f pom.xml"
     }
 
-    stage('Build Docker Image'){
-        sh 'docker build -t suryasajja/webapp .'
+    stage('Build Docker Image') {
+         sh 'docker build . -t suryasajja/webapp:$Docker_tag'
+		   withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
+				    
+				  sh 'docker login -u suryasajja -p $dockerhub'
+				  sh 'docker push suryasajja/webapp:$Docker_tag'
+           }
+        
     }
-    
-    stage('Push Docker Image'){
-       withDockerRegistry(credentialsId: 'dockerhub', url: 'https://hub.docker.com/v2/') {
-    // some block
- 
-          sh "docker login -u suryasajja -p ${dockerhub}"
-       }
-        sh 'docker push suryasajja/webapp'
-     }
 
         
 
