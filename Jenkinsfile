@@ -13,7 +13,7 @@ node {
             app = docker.build("suryasajja/test")    
     }  
 	stage('Push image') {
-docker.withRegistry('https://registry.hub.docker.com', 'suryasajja') {		
+docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {		
        app.push("${env.BUILD_NUMBER}")            
        app.push("latest")        
               }    
