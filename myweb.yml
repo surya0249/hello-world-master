@@ -16,7 +16,7 @@ spec:
         app: myweb
     spec:
       containers:
-      - image: suryasajja/myapp
+      - image: suryasajja/test
         imagePullPolicy: Always
         name: myweb
 
