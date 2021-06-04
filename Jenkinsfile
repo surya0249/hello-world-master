@@ -25,7 +25,7 @@ docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
     stage ('Kubernetes Deploy') {
         kubernetesDeploy(
             configs: 'myweb.yml',
-            kubeconfigId: 'K8S',
+            kubeconfigId: 'k8s',
             enableConfigSubstitution: true
             )
     }
