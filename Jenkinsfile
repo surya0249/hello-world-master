@@ -11,19 +11,16 @@ node {
         sh "${mvnHome}/bin/mvn package -f pom.xml"
     }
 
-    stage ('Docker Build') {
-docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-       app = docker.build("suryasajja/test") 
-       app.push("${env.BUILD_NUMBER}")            
-       app.push("latest")   
-    
-              }    
-           }
-       
+    stage('Build Docker Image'){
+        sh 'docker build -t dockerhandson/java-web-app .'
     }
     
-    stage('Docker push') {
-
+    stage('Push Docker Image'){
+        withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
+          sh "docker login -u suryasajja -p ${dockerhub}"
+        }
+        sh 'docker push suryasajja/webapp'
+     }
 
         
 
