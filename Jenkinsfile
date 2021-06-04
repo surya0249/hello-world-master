@@ -18,7 +18,7 @@ docker.withRegistry('https://registry.hub.docker.com', 'suryasajja') {
        app.push("latest")        
               }    
            }
-        }
+        
 
         
 
