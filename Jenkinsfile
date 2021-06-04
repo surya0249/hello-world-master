@@ -1,0 +1,35 @@
+node {
+
+    def mvnHome = tool 'Maven'
+
+    stage ('Checkout') {
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'e2f1b466-b418-42ac-84a8-b6d6a5857928', url: 'https://github.com/surya0249/hello-world-master.git']]])
+
+    }
+
+    stage ('build')  {
+        sh "${mvnHome}/bin/mvn package -f pom.xml"
+    }
+
+    stage ('Docker Build') {
+     // Build and push image with Jenkins' docker-plugin
+    withDockerServer([uri: "tcp://localhost:4243"]) {
+        withDockerRegistry([credentialsId: "dockerhub", url: "https://index.docker.io/v1/"]) {
+        image = docker.build("suryasajja/myapp")
+        image.push()
+        }
+      }
+    }
+
+    stage ('Kubernetes Deploy') {
+        kubernetesDeploy(
+            configs: 'myweb.yml',
+            kubeconfigId: 'K8S',
+            enableConfigSubstitution: true
+            )
+    }
+    /*
+        stage ('Kubernetes Deploy using Kubectl') {
+          sh "kubectl apply -f MyAwesomeApp/springBootDeploy.yml"
+    }*/
+}
