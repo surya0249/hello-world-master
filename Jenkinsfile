@@ -16,7 +16,7 @@ node {
     }
     
     stage('Push Docker Image'){
-       withDockerRegistry(credentialsId: 'dockerhub', url: 'https://hub.docker.com/?ref=login') {
+       withDockerRegistry(credentialsId: 'dockerhub', url: 'https://hub.docker.com/v2/') {
     // some block
  
           sh "docker login -u suryasajja -p ${dockerhub}"
