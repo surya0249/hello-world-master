@@ -18,7 +18,7 @@ node {
 
     stage('Build Docker Image') {
          sh 'docker build . -t suryasajja/webapp:$Docker_tag'
-		   withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]) {
+		   docker.withRegistry('https://registry.example.com', 'dockerhub') {
 				    
 				  sh 'docker login -u suryasajja -p $dockerhub'
 				  sh 'docker push suryasajja/webapp:$Docker_tag'
