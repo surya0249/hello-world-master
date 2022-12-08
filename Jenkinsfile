@@ -1,4 +1,4 @@
-//this is scripted pipeline
+
 node {
 
     def mvnHome = tool 'Maven'
